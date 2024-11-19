@@ -171,8 +171,10 @@ class SAML2CustomAttrUserBackend(RemoteUserBackend):
             pass
 
         if "FLAGS_BY_GROUP" in be_settings and "GROUP_ATTR" in be_settings:
-            for flag, group_name in be_settings["FLAGS_BY_GROUP"].items():
-                if group_name in ident_groups:
+            for flag, group_names in be_settings["FLAGS_BY_GROUP"].items():
+                if not isinstance(group_names, list):
+                    group_names = [group_names]
+                if any(group_name in ident_groups for group_name in group_names):
                     setattr(user, flag, True)
                 else:
                     setattr(user, flag, False)
